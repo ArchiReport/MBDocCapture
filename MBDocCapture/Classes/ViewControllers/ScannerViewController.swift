@@ -31,6 +31,7 @@ import AVFoundation
 final class ScannerViewController: UIViewController, UIAdaptivePresentationControllerDelegate {
     
     private var prepOverlayView: UIView!
+    private var rotateImage:UIImageView = UIImageView(image: UIImage.init(named: "rotate"))
     
     private var captureSessionManager: CaptureSessionManager?
     private let videoPreviewLayer = AVCaptureVideoPreviewLayer()
@@ -51,7 +52,7 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
     override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
-    
+
     override public var shouldAutorotate: Bool {
         return true
     }
@@ -61,9 +62,9 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
     }
     
     lazy private var cancelButton: UIBarButtonItem = {
-        let title = NSLocalizedString("mbdoccapture.cancel_button", tableName: nil, bundle: bundle(), value: "Cancel", comment: "")
+        let title = NSLocalizedString("Global_Cancel", comment: "") ?? ""
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(cancelImageScannerController))
-        button.tintColor = .white
+//        button.tintColor = .white
         return button
     }()
     
@@ -94,7 +95,7 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setNeedsStatusBarAppearanceUpdate()
+//        setNeedsStatusBarAppearanceUpdate()
         
         CaptureSession.current.isEditing = false
         rectView.removeRectangle()
@@ -132,14 +133,27 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
         updateCameraOrientation()
     }
     
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator){
+        updateCameraOrientation()
+    }
+
+    
     @objc private func updateCameraOrientation() {
         if UIDevice.current.orientation == .landscapeRight {
+            videoPreviewLayer.isHidden = true
+            rotateImage.isHidden = false
             videoPreviewLayer.connection!.videoOrientation       = .landscapeLeft
         } else if UIDevice.current.orientation == .landscapeLeft {
+            videoPreviewLayer.isHidden = true
+            rotateImage.isHidden = false
             videoPreviewLayer.connection!.videoOrientation       = .landscapeRight
         } else if UIDevice.current.orientation == .portrait {
+            videoPreviewLayer.isHidden = false
+            rotateImage.isHidden = true
             videoPreviewLayer.connection!.videoOrientation       = .portrait
         } else if UIDevice.current.orientation == .portraitUpsideDown {
+            videoPreviewLayer.isHidden = true
+            rotateImage.isHidden = false
             videoPreviewLayer.connection!.videoOrientation       = .portraitUpsideDown
         }
         
@@ -149,9 +163,13 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
     // MARK: - Setups
     
     private func setupViews() {
+        view.backgroundColor = .white
         view.layer.addSublayer(videoPreviewLayer)
         rectView.translatesAutoresizingMaskIntoConstraints = false
         rectView.editable = false
+        rotateImage.translatesAutoresizingMaskIntoConstraints = false
+        rotateImage.isHidden = true
+        view.addSubview(rotateImage)
         view.addSubview(rectView)
         view.addSubview(shutterButton)
         view.addSubview(activityIndicator)
@@ -170,6 +188,7 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
         var rectViewConstraints = [NSLayoutConstraint]()
         var shutterButtonConstraints = [NSLayoutConstraint]()
         var activityIndicatorConstraints = [NSLayoutConstraint]()
+        var rotateConstraints = [NSLayoutConstraint]()
         
         rectViewConstraints = [
             rectView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -189,6 +208,11 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ]
         
+        rotateConstraints = [
+            rotateImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            rotateImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ]
+        
         if #available(iOS 11.0, *) {
             let shutterButtonBottomConstraint = view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: shutterButton.bottomAnchor, constant: 8.0)
             shutterButtonConstraints.append(shutterButtonBottomConstraint)
@@ -197,7 +221,7 @@ final class ScannerViewController: UIViewController, UIAdaptivePresentationContr
             shutterButtonConstraints.append(shutterButtonBottomConstraint)
         }
         
-        NSLayoutConstraint.activate(rectViewConstraints + shutterButtonConstraints + activityIndicatorConstraints)
+        NSLayoutConstraint.activate(rectViewConstraints + shutterButtonConstraints + activityIndicatorConstraints + rotateConstraints)
     }
     
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
