@@ -89,12 +89,34 @@ public final class ImageScannerController: UINavigationController {
         return view
     }()
     
+  
+    
     public required init(image: UIImage? = nil, delegate: ImageScannerControllerDelegate? = nil) {
         super.init(rootViewController: ScannerViewController())
         
         self.imageScannerDelegate = delegate
+       
+        navigationBar.shadowImage = UIImage()
+        navigationBar.layer.shadowOpacity = 1
+        navigationBar.layer.shadowOffset = CGSize.zero
+        navigationBar.layer.shadowRadius = 15
+        navigationBar.layer.masksToBounds = false
+        if #available(iOS 11.0, *) {
+            navigationBar.tintColor = UIColor(named: "primary") ?? .black
+        } else {
+            // Fallback on earlier versions
+        }
         
-        navigationBar.tintColor = .white
+        navigationBar.isOpaque = true
+        
+        if #available(iOS 13, *) {
+            let appearance = UINavigationBarAppearance()
+            navigationBar.backgroundColor = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+            navigationBar.standardAppearance = appearance
+            navigationBar.scrollEdgeAppearance = appearance
+            navigationBar.isTranslucent = false
+        }
+                
         self.view.addSubview(blackFlashView)
         setupConstraints()
         
