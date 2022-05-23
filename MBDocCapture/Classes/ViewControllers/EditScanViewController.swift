@@ -49,16 +49,9 @@ final class EditScanViewController: UIViewController, UIAdaptivePresentationCont
     }()
     
     lazy private var nextButton: UIBarButtonItem = {
-        let title = NSLocalizedString("mbdoccapture.next_button", tableName: nil, bundle: bundle(), value: "Next", comment: "")
+        let title = NSLocalizedString("Global_Next", comment: "") ?? ""
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(pushReviewController))
-        button.tintColor = .white
-        return button
-    }()
-    
-    lazy private var cancelButton: UIBarButtonItem = {
-        let title = NSLocalizedString("mbdoccapture.cancel_button", tableName: nil, bundle: bundle(), value: "Cancel", comment: "")
-        let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(dismissEditScanViewControllerController))
-        button.tintColor = .white
+//        button.tintColor = .white
         return button
     }()
 
@@ -90,10 +83,9 @@ final class EditScanViewController: UIViewController, UIAdaptivePresentationCont
         
         setupViews()
         setupConstraints()
-        title = NSLocalizedString("mbdoccapture.scan_edit_title", tableName: nil, bundle: bundle(), value: "Trimming", comment: "")
+        title = NSLocalizedString("Remark_CropImage", comment: "")
         navigationItem.rightBarButtonItem = nextButton
-        navigationItem.leftBarButtonItem = cancelButton
-              
+        
         if #available(iOS 13.0, *) {
             isModalInPresentation = false
             navigationController?.presentationController?.delegate = self
@@ -154,9 +146,6 @@ final class EditScanViewController: UIViewController, UIAdaptivePresentationCont
     
     // MARK: - Actions
     
-    @objc func dismissEditScanViewControllerController() {
-        dismiss(animated: true) 
-    }
     @objc func pushReviewController() {
         guard let rect = rectView.rect,
             let ciImage = CIImage(image: image) else {
