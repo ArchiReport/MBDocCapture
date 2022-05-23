@@ -47,21 +47,21 @@ final class ReviewViewController: UIViewController, UIAdaptivePresentationContro
     lazy private var enhanceButton: UIBarButtonItem = {
         let image = UIImage(named: "enhance", in: bundle(), compatibleWith: nil)
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(toggleEnhancedImage))
-        button.tintColor = .white
+//        button.tintColor = .white
         return button
     }()
     
     lazy private var rotateButton: UIBarButtonItem = {
         let image = UIImage(named: "rotate", in: bundle(), compatibleWith: nil)
         let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(rotateImage))
-        button.tintColor = .white
+//        button.tintColor = .white
         return button
     }()
     
     lazy private var doneButton: UIBarButtonItem = {
-        let title = NSLocalizedString("mbdoccapture.next_button", tableName: nil, bundle: bundle(), value: "Next", comment: "")
+        let title = NSLocalizedString("Global_Add",comment: "")
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(finishScan))
-        button.tintColor = .white
+//        button.tintColor = .white
         return button
     }()
     
@@ -92,7 +92,7 @@ final class ReviewViewController: UIViewController, UIAdaptivePresentationContro
             navigationController?.presentationController?.delegate = self
         }
         
-        title = NSLocalizedString("mbdoccapture.scan_review_title", tableName: nil, bundle: bundle(), value: "Confirmation", comment: "")
+        title = NSLocalizedString("Global_Confirm", comment: "")
         navigationItem.rightBarButtonItem = doneButton
     }
     
@@ -160,7 +160,7 @@ final class ReviewViewController: UIViewController, UIAdaptivePresentationContro
         if isCurrentlyDisplayingEnhancedImage {
             enhanceButton.tintColor = UIColor(red: 64 / 255.0, green: 159 / 255.0, blue: 255 / 255.0, alpha: 1.0)
         } else {
-            enhanceButton.tintColor = .white
+//            enhanceButton.tintColor = .white
         }
     }
     
